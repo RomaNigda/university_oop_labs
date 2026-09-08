@@ -1,4 +1,4 @@
-public class Task6
+public static class Task6
 {
     public static void Run()
     {
@@ -9,19 +9,19 @@ public class Task6
         
         string department = lastDigit switch
         {
-            0 or 1 => "general therapy",
-            2 or 3 => "surgery",
-            4 or 5 => "cardiology",
-            6 or 7 => "neurology",
-            8 or 9 => "ophthalmology",
-            _ => "unknown"
+            0 or 1 => "загальна терапія",
+            2 or 3 => "хірургія",
+            4 or 5 => "кардіологія",
+            6 or 7 => "неврологія",
+            8 or 9 => "офтальмологія",
+            _ => "невідомо"
         };
         
-        string isDiscounted = (card % 2 == 0) ? "yes" : "no";
-        string hasCheckup = (card % 3 == 0) ? "yes" : "no";
+        string isDiscounted = (card % 2 == 0) ? "так" : "ні";
+        string hasCheckup = (card % 3 == 0) ? "так" : "ні";
         
-        Console.WriteLine($"Department: {department}");
-        Console.WriteLine($"Discounted: {isDiscounted}");
-        Console.WriteLine($"Checkup:    {hasCheckup}");
+        Console.WriteLine($"Відділення: {department}");
+        Console.WriteLine($"Пільгова:   {isDiscounted}");
+        Console.WriteLine($"Огляд:      {hasCheckup}");
     }
 }
