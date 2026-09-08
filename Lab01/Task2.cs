@@ -1,4 +1,4 @@
-public class Task2
+public static class Task2
 {
     public static void Run()
     {
@@ -10,6 +10,6 @@ public class Task2
         int discount = int.Parse(Console.ReadLine());
     
         double total = price * visits * (1 - discount / 100.0);
-        Console.WriteLine($"Sum: {total:F2} hrn");
+        Console.WriteLine($"Сума: {total:F2} грн");
     }
 }
