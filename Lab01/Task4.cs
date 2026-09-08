@@ -1,4 +1,4 @@
-public class Task4
+public static class Task4
 {
     public static void Run()
     {
@@ -10,14 +10,14 @@ public class Task4
         string category;
         
         if (systolic < 120 && diastolic < 80)
-            category = "normal";
+            category = "норма";
         else if (systolic < 130 && diastolic < 80)
-            category = "elevated";
+            category = "підвищений";
         else if (systolic < 140 || diastolic < 90)
-            category = "hypertension stage 1";
+            category = "гіпертонія 1 ступеня";
         else
-            category = "hypertension stage 2";
+            category = "гіпертонія 2 ступеня";
         
-        Console.WriteLine($"Pressure: {systolic}/{diastolic} — {category}");
+        Console.WriteLine($"Тиск: {systolic}/{diastolic} — {category}");
     }
 }
