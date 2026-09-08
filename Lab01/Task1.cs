@@ -1,4 +1,4 @@
-public class Task1
+static class Task1
 {
     static double weight = 0, height = 0;
    
@@ -11,6 +11,6 @@ public class Task1
         height = double.Parse(Console.ReadLine());
         
         double imt = weight / (height * height / 10000);
-        Console.WriteLine($"Imt = {imt:F2}");
+        Console.WriteLine($"Imt: {imt:F2}");
     }
 }
