@@ -1,0 +1,35 @@
+public static class Task5
+{
+    public static void Run()
+    {
+        int n = int.Parse(Console.ReadLine());
+        
+        int[,] matrix = new int[n, n];
+        
+        for (int i = 0; i < n; i++)
+        {
+            string[] input = Console.ReadLine().Split(' ');
+            for (int j = 0; j < n; j++)
+            {
+                matrix[i, j] = int.Parse(input[j]);
+            }
+        }
+        
+        int[] mainDiag = new int[n];
+        int[] secondaryDiag = new int[n];
+        int mainSum = 0;
+        int secondarySum = 0;
+        
+        for (int i = 0; i < n; i++)
+        {
+            mainDiag[i] = matrix[i, i];
+            mainSum += mainDiag[i];
+            
+            secondaryDiag[i] = matrix[i, n - 1 - i];
+            secondarySum += secondaryDiag[i];
+        }
+        
+        Console.WriteLine($"Головна діагональ: {string.Join(", ", mainDiag)} (сума = {mainSum})");
+        Console.WriteLine($"Побічна діагональ: {string.Join(", ", secondaryDiag)} (сума = {secondarySum})");
+    }
+}
