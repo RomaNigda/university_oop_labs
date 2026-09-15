@@ -2,4 +2,4 @@
 
 CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
 
-Task1.Run();
+Task2.Run();
