@@ -1,17 +1,17 @@
-﻿using ClinicApp;
+﻿using System;
+using ClinicApp;
 
-DoctorManager manager = new DoctorManager();
+Appointment a1 = new Appointment(1, 1, new DateTime(2026, 5, 9, 10, 0, 0));
+Appointment a2 = new Appointment(2, 2, new DateTime(2026, 5, 9, 11, 0, 0), 45);
+Appointment a3 = new Appointment(3, 3, new DateTime(2026, 5, 10, 9, 0, 0), 20);
 
-Doctor d1 = new Doctor("Олег", "Сидоренко", "Кардіологія", "LIC-001", "0441234567");
-d1.WorkEndHour = 16;
-manager.Add(d1);
+Console.WriteLine(a1);
+Console.WriteLine(a2);
+Console.WriteLine(a3);
 
-Doctor d2 = new Doctor("Наталія", "Мороз", "Неврологія", "LIC-002", "0442345678");
-d2.WorkStartHour = 9;
-d2.WorkEndHour = 18;
-manager.Add(d2);
+a1.Cancel("Пацієнт не зміг прийти");
+a2.Complete();
 
-manager.Add(new Doctor("Андрій", "Власенко", "Педіатрія", "LIC-003", "0443456789"));
-
-manager.DisplayAll();
-manager.DisplayStats();
+Console.WriteLine();
+Console.WriteLine(a1);
+Console.WriteLine(a2);
