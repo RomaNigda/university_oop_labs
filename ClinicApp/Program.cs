@@ -1,32 +1,17 @@
-﻿using System;
-using ClinicApp;
+﻿using ClinicApp;
 
-Console.WriteLine("=== Тест GrowablePatientManager ===");
-Console.WriteLine("Додаємо пацієнтів одного за одним...");
+DoctorManager manager = new DoctorManager();
 
-GrowablePatientManager manager = new GrowablePatientManager();
-PatientManager patientManager = new PatientManager();
+Doctor d1 = new Doctor("Олег", "Сидоренко", "Кардіологія", "LIC-001", "0441234567");
+d1.WorkEndHour = 16;
+manager.Add(d1);
 
-for (int i = 1; i <= 20; i++)
-{
-    manager.Add(new Patient($"Тест", $"Пацієнт{i}", new DateTime(1990, 1, 1, 0, 0, 0), "A+", "0000000000"));
-}
+Doctor d2 = new Doctor("Наталія", "Мороз", "Неврологія", "LIC-002", "0442345678");
+d2.WorkStartHour = 9;
+d2.WorkEndHour = 18;
+manager.Add(d2);
 
-Console.WriteLine();
-Console.WriteLine("Тест пошуку:");
-Patient? found = manager.FindById(10);
-if (found != null)
-    Console.WriteLine($"  FindById(10) → {found.FullName}");
-else
-    Console.WriteLine("  FindById(10) → не знайдено");
+manager.Add(new Doctor("Андрій", "Власенко", "Педіатрія", "LIC-003", "0443456789"));
 
-Patient? notFound = manager.FindById(99);
-if (notFound != null)
-    Console.WriteLine($"  FindById(99) → {notFound.FullName}");
-else
-    Console.WriteLine("  FindById(99) → не знайдено");
-
-Console.WriteLine();
-Console.WriteLine("Порівняння:");
-Console.WriteLine($"  PatientManager:         {patientManager.MaxCount} місць (фіксовано)");
-Console.WriteLine($"  GrowablePatientManager:  {manager.Capacity} місця (зросте при потребі)");
+manager.DisplayAll();
+manager.DisplayStats();
