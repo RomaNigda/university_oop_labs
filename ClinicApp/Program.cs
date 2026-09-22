@@ -1,23 +1,32 @@
 ﻿using System;
 using ClinicApp;
 
-Clinic clinic = new Clinic("Медична Клініка");
+Console.WriteLine("=== Тест GrowablePatientManager ===");
+Console.WriteLine("Додаємо пацієнтів одного за одним...");
 
-clinic.Patients.Add(new Patient("Іван", "Петренко", new DateTime(1985, 3, 12, 0, 0, 0), "A+", "0501234567"));
-clinic.Patients.Add(new Patient("Олена", "Коваль", new DateTime(1993, 7, 8, 0, 0, 0), "B-", "0672345678"));
-clinic.Patients.Add(new Patient("Максим", "Бойко", new DateTime(2010, 5, 20, 0, 0, 0), "O+", "0933456789"));
-clinic.Patients.Add(new Patient("Марія", "Ткач"));
+GrowablePatientManager manager = new GrowablePatientManager();
+PatientManager patientManager = new PatientManager();
 
-clinic.Doctors.Add(new Doctor("Олег", "Сидоренко", "Кардіологія", "LIC-001", "0441234567"));
-clinic.Doctors.Add(new Doctor("Наталія", "Мороз", "Неврологія", "LIC-002", "0442345678"));
-clinic.Doctors.Add(new Doctor("Андрій", "Власенко", "Педіатрія", "LIC-003", "0443456789"));
-
-clinic.Appointments.Book(1, 1, new DateTime(2027, 5, 9, 10, 0, 0));
-clinic.Appointments.Book(2, 2, new DateTime(2027, 5, 9, 11, 0, 0), 45);
-clinic.Appointments.Book(3, 3, new DateTime(2027, 5, 10, 9, 0, 0), 20);
+for (int i = 1; i <= 20; i++)
+{
+    manager.Add(new Patient($"Тест", $"Пацієнт{i}", new DateTime(1990, 1, 1, 0, 0, 0), "A+", "0000000000"));
+}
 
 Console.WriteLine();
-clinic.DisplaySchedule(new DateTime(2027, 5, 9, 0, 0, 0));
+Console.WriteLine("Тест пошуку:");
+Patient? found = manager.FindById(10);
+if (found != null)
+    Console.WriteLine($"  FindById(10) → {found.FullName}");
+else
+    Console.WriteLine("  FindById(10) → не знайдено");
+
+Patient? notFound = manager.FindById(99);
+if (notFound != null)
+    Console.WriteLine($"  FindById(99) → {notFound.FullName}");
+else
+    Console.WriteLine("  FindById(99) → не знайдено");
 
 Console.WriteLine();
-clinic.GenerateReport();
+Console.WriteLine("Порівняння:");
+Console.WriteLine($"  PatientManager:         {patientManager.MaxCount} місць (фіксовано)");
+Console.WriteLine($"  GrowablePatientManager:  {manager.Capacity} місця (зросте при потребі)");
