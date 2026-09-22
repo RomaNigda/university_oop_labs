@@ -62,7 +62,7 @@ public class Patient
             _ => "літній"
         };
     }
-
+    
     public override string ToString()
     {
         return $"[{Id}] {FullName} | Вік: {Age} ({GetAgeCategory()}) | Кров: {BloodType} | Тел: {Phone}";
