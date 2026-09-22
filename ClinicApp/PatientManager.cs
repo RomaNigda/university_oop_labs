@@ -10,6 +10,12 @@ public class PatientManager
     {
         get { return _count; }
     }
+    
+    public int MaxCount
+    {
+        get { return MaxPatients; }
+    }
+    
 
     public PatientManager()
     {
