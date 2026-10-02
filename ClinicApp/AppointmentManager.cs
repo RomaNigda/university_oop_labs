@@ -205,4 +205,9 @@ public class AppointmentManager
             return _appointments[index];
         }
     }
+    
+    public Appointment[] GetByDate(int year, int month, int day)
+    {
+        return GetByDate(new DateTime(year, month, day));
+    }
 }

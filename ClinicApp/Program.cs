@@ -3,21 +3,21 @@
 Clinic clinic = new Clinic("Медична Клініка");
 
 clinic.Patients.Add(new Patient("Іван", "Петренко", new DateTime(1985, 3, 12, 0, 0, 0), BloodType.APositive, "0501234567"));
-clinic.Patients.Add(new Patient("Олена", "Коваль", new DateTime(1993, 7, 8, 0, 0, 0), BloodType.BNegative, "0672345678"));
-
 clinic.Doctors.Add(new Doctor("Олег", "Сидоренко", Speciality.Cardiology, "LIC-001", "0441234567"));
-clinic.Doctors.Add(new Doctor("Наталія", "Мороз", Speciality.Neurology, "LIC-002", "0442345678"));
 
-Console.WriteLine("--- Індексатори ---");
-Console.WriteLine(clinic.Patients[0]);
-Console.WriteLine(clinic.Doctors[1]);
+clinic.Appointments.Book(1, 1, new DateTime(2027, 5, 10, 10, 0, 0));
 
-Console.WriteLine();
-Console.WriteLine("--- ClinicFormatter ---");
-Console.WriteLine(ClinicFormatter.FormatBloodType(BloodType.APositive));
-Console.WriteLine(ClinicFormatter.FormatSpeciality(Speciality.Cardiology));
-Console.WriteLine(ClinicFormatter.FormatAge(1));
-Console.WriteLine(ClinicFormatter.FormatAge(3));
-Console.WriteLine(ClinicFormatter.FormatAge(11));
-Console.WriteLine(ClinicFormatter.FormatAge(21));
-Console.WriteLine(ClinicFormatter.FormatPhone("0501234567"));
+Doctor[] cardiologists = clinic.Doctors.FindBySpeciality(Speciality.Cardiology);
+Console.WriteLine($"Кардіологів (enum): {cardiologists.Length}");
+
+Doctor[] partial = clinic.Doctors.FindBySpeciality("кардіо");
+Console.WriteLine($"Кардіологів (string): {partial.Length}");
+
+Appointment[] byDate = clinic.Appointments.GetByDate(2027, 5, 10);
+Console.WriteLine($"Записів на 10.05.2027: {byDate.Length}");
+
+if (clinic.Patients.TryFindById(1, out Patient patient))
+    Console.WriteLine("Знайдено: " + patient.FullName);
+
+string name = clinic.Patients.FindById(99)?.FullName ?? "не знайдено";
+Console.WriteLine(name);
