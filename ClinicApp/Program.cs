@@ -8,7 +8,7 @@ PatientManager patientManager = new PatientManager();
 
 for (int i = 1; i <= 20; i++)
 {
-    manager.Add(new Patient($"Тест", $"Пацієнт{i}", new DateTime(1990, 1, 1, 0, 0, 0), "A+", "0000000000"));
+    manager.Add(new Patient($"Тест", $"Пацієнт{i}", new DateTime(1990, 1, 1, 0, 0, 0), BloodType.APositive, "0000000000"));
 }
 
 Console.WriteLine();
