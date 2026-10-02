@@ -147,4 +147,14 @@ public class PatientManager
         Console.WriteLine($"Дорослих:     {adults} з {_count}");
         Console.WriteLine("============================");
     }
+    
+    public Patient? this[int index]
+    {
+        get
+        {
+            if (index < 0 || index >= _count)
+                return null;
+            return _patients[index];
+        }
+    }
 }

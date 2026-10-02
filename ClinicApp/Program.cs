@@ -1,19 +1,23 @@
 ﻿using ClinicApp;
 
-Doctor d1 = new Doctor("Олег", "Сидоренко", Speciality.Cardiology, "LIC-001", "0441234567");
-d1.Schedule = new WorkSchedule(8, 16);
+Clinic clinic = new Clinic("Медична Клініка");
 
-Doctor d2 = new Doctor("Наталія", "Мороз", Speciality.Neurology, "LIC-002", "0442345678");
-d2.Schedule = new WorkSchedule(9, 18);
+clinic.Patients.Add(new Patient("Іван", "Петренко", new DateTime(1985, 3, 12, 0, 0, 0), BloodType.APositive, "0501234567"));
+clinic.Patients.Add(new Patient("Олена", "Коваль", new DateTime(1993, 7, 8, 0, 0, 0), BloodType.BNegative, "0672345678"));
 
-Doctor d3 = new Doctor("Андрій", "Власенко", Speciality.Pediatrics, "LIC-003", "0443456789");
+clinic.Doctors.Add(new Doctor("Олег", "Сидоренко", Speciality.Cardiology, "LIC-001", "0441234567"));
+clinic.Doctors.Add(new Doctor("Наталія", "Мороз", Speciality.Neurology, "LIC-002", "0442345678"));
 
-Console.WriteLine(d1);
-Console.WriteLine(d2);
-Console.WriteLine(d3);
+Console.WriteLine("--- Індексатори ---");
+Console.WriteLine(clinic.Patients[0]);
+Console.WriteLine(clinic.Doctors[1]);
 
-WorkSchedule morning = new WorkSchedule(8, 16);
-WorkSchedule copy = morning;
-
-Console.WriteLine($"morning: {morning}");
-Console.WriteLine($"copy:    {copy}");
+Console.WriteLine();
+Console.WriteLine("--- ClinicFormatter ---");
+Console.WriteLine(ClinicFormatter.FormatBloodType(BloodType.APositive));
+Console.WriteLine(ClinicFormatter.FormatSpeciality(Speciality.Cardiology));
+Console.WriteLine(ClinicFormatter.FormatAge(1));
+Console.WriteLine(ClinicFormatter.FormatAge(3));
+Console.WriteLine(ClinicFormatter.FormatAge(11));
+Console.WriteLine(ClinicFormatter.FormatAge(21));
+Console.WriteLine(ClinicFormatter.FormatPhone("0501234567"));
