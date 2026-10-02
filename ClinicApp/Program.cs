@@ -1,5 +1,4 @@
-﻿using System;
-using ClinicApp;
+﻿using ClinicApp;
 
 Console.WriteLine("=== Тест GrowablePatientManager ===");
 Console.WriteLine("Додаємо пацієнтів одного за одним...");
