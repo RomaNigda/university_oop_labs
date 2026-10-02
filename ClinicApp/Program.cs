@@ -1,13 +1,15 @@
 ﻿using ClinicApp;
 
-Doctor d1 = new Doctor("Олег", "Сидоренко", Speciality.Cardiology, "LIC-001", "0441234567");
-d1.Schedule = new WorkSchedule(8, 16);
+Clinic clinic = new Clinic("Медична Клініка");
 
-Doctor d2 = new Doctor("Наталія", "Мороз", Speciality.Neurology, "LIC-002", "0442345678");
-d2.Schedule = new WorkSchedule(9, 18);
+clinic.Patients.Add(new Patient("Іван", "Петренко", new DateTime(1985, 3, 12, 0, 0, 0), BloodType.APositive, "0501234567"));
+clinic.Doctors.Add(new Doctor("Олег", "Сидоренко", Speciality.Cardiology, "LIC-001", "0441234567"));
 
-Doctor d3 = new Doctor("Андрій", "Власенко", Speciality.Pediatrics, "LIC-003", "0443456789");
+Doctor[] found = clinic.Doctors.FindBySpeciality(Speciality.Cardiology);
+Console.WriteLine($"Кардіологів: {found.Length}");
 
-Console.WriteLine(d1);
-Console.WriteLine(d2);
-Console.WriteLine(d3);
+if (clinic.Patients.TryFindById(1, out Patient patient))
+    Console.WriteLine("Знайдено: " + patient.FullName);
+
+string name = clinic.Patients.FindById(99)?.FullName ?? "не знайдено";
+Console.WriteLine(name);
