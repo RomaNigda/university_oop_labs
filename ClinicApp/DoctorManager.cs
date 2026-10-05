@@ -47,7 +47,7 @@ public class DoctorManager
 
         for (int i = 0; i < _count; i++)
         {
-            if (_doctors[i].Speciality.ToLower().Contains(search))
+            if (_doctors[i].Speciality.ToString().ToLower().Contains(search))
                 matches++;
         }
 
@@ -56,7 +56,7 @@ public class DoctorManager
 
         for (int i = 0; i < _count; i++)
         {
-            if (_doctors[i].Speciality.ToLower().Contains(search))
+            if (_doctors[i].Speciality.ToString().ToLower().Contains(search))
             {
                 result[index] = _doctors[i];
                 index++;
@@ -97,7 +97,7 @@ public class DoctorManager
             _doctors[i] = _doctors[i + 1];
         }
 
-        _doctors[_count - 1] = null;
+        _doctors[_count - 1] = null!;
         _count--;
         return true;
     }
@@ -142,7 +142,7 @@ public class DoctorManager
             bool seen = false;
             for (int j = 0; j < i; j++)
             {
-                if (_doctors[j].Speciality.ToLower() == _doctors[i].Speciality.ToLower())
+                if (_doctors[j].Speciality == _doctors[i].Speciality)
                 {
                     seen = true;
                     break;
@@ -154,7 +154,7 @@ public class DoctorManager
                 int specialityCount = 0;
                 for (int k = 0; k < _count; k++)
                 {
-                    if (_doctors[k].Speciality.ToLower() == _doctors[i].Speciality.ToLower())
+                    if (_doctors[k].Speciality == _doctors[i].Speciality)
                         specialityCount++;
                 }
 
@@ -162,5 +162,49 @@ public class DoctorManager
             }
         }
         Console.WriteLine("==========================");
+    }
+    
+    public Doctor? this[int index]
+    {
+        get
+        {
+            if (index < 0 || index >= _count)
+                return null;
+            return _doctors[index];
+        }
+    }
+    
+    public Doctor[] FindBySpeciality(Speciality speciality)
+    {
+        int matches = 0;
+        for (int i = 0; i < _count; i++)
+        {
+            if (_doctors[i].Speciality == speciality)
+                matches++;
+        }
+
+        Doctor[] result = new Doctor[matches];
+        int index = 0;
+        for (int i = 0; i < _count; i++)
+        {
+            if (_doctors[i].Speciality == speciality)
+            {
+                result[index] = _doctors[i];
+                index++;
+            }
+        }
+        return result;
+    }
+
+    public bool TryFindById(int id, out Doctor doctor)
+    {
+        Doctor? found = FindById(id);
+        if (found != null)
+        {
+            doctor = found;
+            return true;
+        }
+        doctor = null!;
+        return false;
     }
 }
