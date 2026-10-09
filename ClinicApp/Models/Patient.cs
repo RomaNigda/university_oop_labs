@@ -17,19 +17,40 @@ public class Patient
     public string FirstName
     {
         get => _firstName;
-        set => _firstName = value;
+        set
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                throw new ArgumentException("Ім'я не може бути порожнім.", nameof(FirstName));
+            if (value.Length > 50)
+                throw new ArgumentException("Ім'я не може бути довшим за 50 символів.", nameof(FirstName));
+            _firstName = value;
+        }
     }
 
     public string LastName
     {
         get => _lastName;
-        set => _lastName = value;
+        set
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                throw new ArgumentException("Прізвище не може бути порожнім.", nameof(LastName));
+            if (value.Length > 50)
+                throw new ArgumentException("Прізвище не може бути довшим за 50 символів.", nameof(LastName));
+            _lastName = value;
+        }
     }
 
     public DateTime DateOfBirth
     {
         get => _dateOfBirth;
-        set => _dateOfBirth = value;
+        set
+        {
+            if (value > DateTime.Today)
+                throw new ArgumentOutOfRangeException(nameof(DateOfBirth), "Дата народження не може бути в майбутньому.");
+            if (value.Year < 1900)
+                throw new ArgumentOutOfRangeException(nameof(DateOfBirth), "Дата народження не може бути раніше 1900 року.");
+            _dateOfBirth = value;
+        }
     }
 
     public BloodType BloodType { get; set; }
@@ -38,7 +59,17 @@ public class Patient
     public string Phone
     {
         get => _phone;
-        set => _phone = value;
+        set
+        {
+            if (value.Length != 10)
+                throw new ArgumentException("Телефон має містити рівно 10 цифр.", nameof(Phone));
+            for (int i = 0; i < value.Length; i++)
+            {
+                if (!char.IsDigit(value[i]))
+                    throw new ArgumentException("Телефон має містити лише цифри.", nameof(Phone));
+            }
+            _phone = value;
+        }
     }
 
     public string FullName
@@ -73,13 +104,13 @@ public class Patient
 
     public Patient(string firstName, string lastName, DateTime dateOfBirth, BloodType bloodType, string phone)
     {
-        Id = _nextId++;
         FirstName = firstName;
         LastName = lastName;
         DateOfBirth = dateOfBirth;
         BloodType = bloodType;
         Phone = phone;
         Email = "";
+        Id = _nextId++;
     }
 
     public string GetAgeCategory()
