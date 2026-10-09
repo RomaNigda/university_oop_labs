@@ -1,25 +1,69 @@
-﻿using ClinicApp;
+﻿using System;
+using ClinicApp;
 using ClinicApp.Enums;
 using ClinicApp.Models;
 
 Clinic clinic = new Clinic("Медична Клініка");
 
-clinic.Patients.Add(new Patient("Іван", "Петренко", new DateTime(1985, 3, 12, 0, 0, 0), BloodType.APositive, "0501234567"));
 clinic.Doctors.Add(new Doctor("Олег", "Сидоренко", Speciality.Cardiology, "LIC-001", "0441234567"));
+clinic.Patients.Add(new Patient("Іван", "Петренко", new DateTime(1985, 3, 12, 0, 0, 0), BloodType.APositive, "0501234567"));
 
-clinic.Appointments.Book(1, 1, new DateTime(2027, 5, 10, 10, 0, 0));
+Console.WriteLine("=== Додавання пацієнта з некоректним ім'ям ===");
+try
+{
+    Patient bad = new Patient("", "Коваль", new DateTime(1990, 5, 5, 0, 0, 0), BloodType.OPositive, "0672345678");
+    clinic.Patients.Add(bad);
+}
+catch (ArgumentException e)
+{
+    Console.WriteLine("Помилка: " + e.Message);
+}
 
-Doctor[] cardiologists = clinic.Doctors.FindBySpeciality(Speciality.Cardiology);
-Console.WriteLine($"Кардіологів (enum): {cardiologists.Length}");
+Console.WriteLine();
+Console.WriteLine("=== Додавання пацієнта з датою народження в майбутньому ===");
+try
+{
+    Patient future = new Patient("Марія", "Ткач", new DateTime(2030, 1, 1, 0, 0, 0), BloodType.BNegative, "0933456789");
+    clinic.Patients.Add(future);
+}
+catch (ArgumentOutOfRangeException e)
+{
+    Console.WriteLine("Помилка: " + e.Message);
+}
 
-Doctor[] partial = clinic.Doctors.FindBySpeciality("кардіо");
-Console.WriteLine($"Кардіологів (string): {partial.Length}");
+Console.WriteLine();
+Console.WriteLine("=== Додавання лікаря з некоректним графіком (20–6) ===");
+try
+{
+    Doctor badSchedule = new Doctor("Петро", "Іванов", Speciality.Surgery, "LIC-002", "0442345678");
+    badSchedule.Schedule = new WorkSchedule(20, 6);
+    clinic.Doctors.Add(badSchedule);
+}
+catch (ArgumentOutOfRangeException e)
+{
+    Console.WriteLine("Помилка: " + e.Message);
+}
+catch (ArgumentException e)
+{
+    Console.WriteLine("Помилка: " + e.Message);
+}
 
-Appointment[] byDate = clinic.Appointments.GetByDate(2027, 5, 10);
-Console.WriteLine($"Записів на 10.05.2027: {byDate.Length}");
+Console.WriteLine();
+Console.WriteLine("=== Запис на прийом з некоректною тривалістю ===");
+try
+{
+    clinic.Appointments.Book(1, 1, new DateTime(2027, 5, 9, 10, 0, 0), -15);
+}
+catch (ArgumentOutOfRangeException e)
+{
+    Console.WriteLine("Помилка: " + e.Message);
+}
 
-if (clinic.Patients.TryFindById(1, out Patient patient))
-    Console.WriteLine("Знайдено: " + patient.FullName);
+Console.WriteLine();
+Console.WriteLine("=== Коректні дані — усе працює ===");
+clinic.Patients.Add(new Patient("Олена", "Коваль", new DateTime(1993, 7, 8, 0, 0, 0), BloodType.BNegative, "0672345678"));
+clinic.Doctors.Add(new Doctor("Наталія", "Мороз", Speciality.Neurology, "LIC-003", "0443456789"));
+clinic.Appointments.Book(1, 1, new DateTime(2027, 5, 9, 10, 0, 0), 30);
 
-string name = clinic.Patients.FindById(99)?.FullName ?? "не знайдено";
-Console.WriteLine(name);
+clinic.Patients.DisplayAll();
+clinic.Doctors.DisplayAll();
