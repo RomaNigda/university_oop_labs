@@ -1,4 +1,6 @@
 ﻿using ClinicApp;
+using ClinicApp.Enums;
+using ClinicApp.Models;
 
 Clinic clinic = new Clinic("Медична Клініка");
 
