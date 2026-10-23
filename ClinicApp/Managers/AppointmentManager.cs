@@ -212,4 +212,15 @@ public class AppointmentManager
     {
         return GetByDate(new DateTime(year, month, day));
     }
+    
+    
+    public Appointment[] GetAll()
+    {
+        Appointment[] result = new Appointment[_count];
+        for (int i = 0; i < _count; i++)
+        {
+            result[i] = _appointments[i];
+        }
+        return result;
+    }
 }
