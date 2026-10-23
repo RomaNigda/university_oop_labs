@@ -1,3 +1,4 @@
+using ClinicApp.Interfaces;
 using ClinicApp.Models;
 
 namespace ClinicApp.Managers;
@@ -222,5 +223,16 @@ public class AppointmentManager
             result[i] = _appointments[i];
         }
         return result;
+    }
+    
+    public static int CancelAll(ICancellable[] items, string reason = "")
+    {
+        int count = 0;
+        for (int i = 0; i < items.Length; i++)
+        {
+            if (items[i].Cancel(reason))
+                count++;
+        }
+        return count;
     }
 }
