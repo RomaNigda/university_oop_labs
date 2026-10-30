@@ -382,6 +382,7 @@ static void AppointmentsMenu(Clinic clinic)
         Console.WriteLine("6. Скасувати запис");
         Console.WriteLine("7. Завершити запис");
         Console.WriteLine("8. Скасувати всі записи пацієнта");
+        Console.WriteLine("9. За типом прийому");
         Console.WriteLine("0. Назад");
         Console.Write("Ваш вибір: ");
 
@@ -395,6 +396,7 @@ static void AppointmentsMenu(Clinic clinic)
             case "6": CancelAppointment(clinic); break;
             case "7": CompleteAppointment(clinic); break;
             case "8": CancelAllPatientAppointments(clinic); break;
+            case "9": ShowAppointmentsByType(clinic); break;
             case "0": back = true; break;
             default: Console.WriteLine("Невідомий пункт меню."); break;
         }
@@ -411,6 +413,26 @@ static void CancelAllPatientAppointments(Clinic clinic)
     
     int count = AppointmentManager.CancelAll(appointments, reason);
     Console.WriteLine($"Скасовано записів: {count}");
+}
+
+
+static void ShowAppointmentsByType(Clinic clinic)
+{
+    Console.WriteLine("  1. Термінові");
+    Console.WriteLine("  2. Консультації спеціаліста");
+    Console.WriteLine("  3. Звичайні");
+    Console.Write("Оберіть: ");
+
+    string choice = Console.ReadLine() ?? "";
+
+    if (choice == "1")
+        clinic.Appointments.DisplayList(clinic.Appointments.GetUrgent());
+    else if (choice == "2")
+        clinic.Appointments.DisplayList(clinic.Appointments.GetSpecialist());
+    else if (choice == "3")
+        clinic.Appointments.DisplayList(clinic.Appointments.GetRegular());
+    else
+        Console.WriteLine("Невідомий пункт меню.");
 }
 
 static void BookAppointment(Clinic clinic)
