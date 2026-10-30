@@ -14,6 +14,17 @@ Clinic clinic = new Clinic("Медична Клініка");
 SeedPatientsAndDoctors(clinic);
 SeedMedicalRecords(clinic);
 
+UrgentAppointment urgent = new UrgentAppointment(1, 1, DateTime.Today.AddDays(1), "тест");
+Appointment asBase = urgent;
+
+Console.WriteLine("\n== new vs override ==");
+Console.WriteLine($"Через Appointment:       {asBase.GetDescription()} | пріоритет {asBase.GetPriority()}");
+Console.WriteLine($"Через UrgentAppointment: {urgent.GetDescription()} | пріоритет {urgent.GetPriority()}");
+
+// 1. GetDescription() через Appointment дає "Терміновий (тест)", бо він virtual і перевизначений через override у UrgentAppointment — виклик іде за реальним типом об'єкта.
+// 2. GetPriority() через Appointment повертає 3, бо базовий метод НЕ virtual, а в UrgentAppointment він прихований через new — виклик іде за типом змінної.
+// 3. Щоб GetPriority() теж працював поліморфно, треба зробити його virtual в Appointment і override в UrgentAppointment (замість new).
+
 bool running = true;
 while (running)
 {
@@ -65,8 +76,8 @@ static void SeedPatientsAndDoctors(Clinic clinic)
 
     DateTime tomorrow = DateTime.Today.AddDays(1);
     clinic.Appointments.Book(1, 1, tomorrow.AddHours(10), 30);
-    clinic.Appointments.Book(2, 2, tomorrow.AddHours(11), 45);
-    clinic.Appointments.Book(3, 3, tomorrow.AddHours(9), 20);
+    clinic.Appointments.BookUrgent(2, 2, tomorrow.AddHours(11), "біль у грудях", 30);
+    clinic.Appointments.BookSpecialist(3, 3, tomorrow.AddHours(12), "кардіологія", 60);
 }
 
 static void SeedMedicalRecords(Clinic clinic)
@@ -371,6 +382,7 @@ static void AppointmentsMenu(Clinic clinic)
         Console.WriteLine("6. Скасувати запис");
         Console.WriteLine("7. Завершити запис");
         Console.WriteLine("8. Скасувати всі записи пацієнта");
+        Console.WriteLine("9. За типом прийому");
         Console.WriteLine("0. Назад");
         Console.Write("Ваш вибір: ");
 
@@ -384,6 +396,7 @@ static void AppointmentsMenu(Clinic clinic)
             case "6": CancelAppointment(clinic); break;
             case "7": CompleteAppointment(clinic); break;
             case "8": CancelAllPatientAppointments(clinic); break;
+            case "9": ShowAppointmentsByType(clinic); break;
             case "0": back = true; break;
             default: Console.WriteLine("Невідомий пункт меню."); break;
         }
@@ -400,6 +413,26 @@ static void CancelAllPatientAppointments(Clinic clinic)
     
     int count = AppointmentManager.CancelAll(appointments, reason);
     Console.WriteLine($"Скасовано записів: {count}");
+}
+
+
+static void ShowAppointmentsByType(Clinic clinic)
+{
+    Console.WriteLine("  1. Термінові");
+    Console.WriteLine("  2. Консультації спеціаліста");
+    Console.WriteLine("  3. Звичайні");
+    Console.Write("Оберіть: ");
+
+    string choice = Console.ReadLine() ?? "";
+
+    if (choice == "1")
+        clinic.Appointments.DisplayList(clinic.Appointments.GetUrgent());
+    else if (choice == "2")
+        clinic.Appointments.DisplayList(clinic.Appointments.GetSpecialist());
+    else if (choice == "3")
+        clinic.Appointments.DisplayList(clinic.Appointments.GetRegular());
+    else
+        Console.WriteLine("Невідомий пункт меню.");
 }
 
 static void BookAppointment(Clinic clinic)
