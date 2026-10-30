@@ -16,6 +16,11 @@ public class Appointment : IPayable, ICancellable
     public int DoctorId { get; }
     public DateTime ScheduledAt { get; set; }
 
+    // Обрано Варіант А: множник знижки в базовому класі.
+    // Це дозволяє застосовувати VIP-знижку одразу до всіх типів прийомів 
+    // (і до майбутніх), не створюючи нових підкласів (принцип Open/Closed).
+    public decimal DiscountMultiplier { get; set; } = 1m;
+
     public int DurationMinutes
     {
         get => _durationMinutes;
@@ -68,7 +73,7 @@ public class Appointment : IPayable, ICancellable
 
     public virtual decimal GetCost()
     {
-        return DurationMinutes * 10m;
+        return DurationMinutes * 10m * DiscountMultiplier;
     }
 
     public virtual string GetDescription()
