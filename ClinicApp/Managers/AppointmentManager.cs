@@ -242,7 +242,7 @@ public class AppointmentManager
 
         string notes = (appointment.Notes.Length > 0) ? $" | {appointment.Notes}" : "";
 
-        Console.WriteLine($"[{appointment.Id}] {patientName} → {doctorName} | {appointment.ScheduledAt:dd.MM.yyyy HH:mm}–{appointment.EndsAt:HH:mm} | {appointment.Status}{notes}");
+        Console.WriteLine($"[{appointment.Id}] {appointment.GetDescription()} | {patientName} → {doctorName} | {appointment.ScheduledAt:dd.MM.yyyy HH:mm}–{appointment.EndsAt:HH:mm} | {appointment.Status} | {appointment.GetCost():F2} грн{notes}");
     }
 
     public void DisplayList(Appointment[] appointments)
@@ -281,6 +281,69 @@ public class AppointmentManager
         for (int i = 0; i < _count; i++)
         {
             result[i] = _appointments[i];
+        }
+        return result;
+    }
+    
+    public Appointment[] GetUrgent()
+    {
+        int matches = 0;
+        for (int i = 0; i < _count; i++)
+        {
+            if (_appointments[i] is UrgentAppointment) matches++;
+        }
+
+        Appointment[] result = new Appointment[matches];
+        int index = 0;
+        for (int i = 0; i < _count; i++)
+        {
+            if (_appointments[i] is UrgentAppointment)
+            {
+                result[index] = _appointments[i];
+                index++;
+            }
+        }
+        return result;
+    }
+
+    public Appointment[] GetSpecialist()
+    {
+        int matches = 0;
+        for (int i = 0; i < _count; i++)
+        {
+            if (_appointments[i] is SpecialistAppointment) matches++;
+        }
+
+        Appointment[] result = new Appointment[matches];
+        int index = 0;
+        for (int i = 0; i < _count; i++)
+        {
+            if (_appointments[i] is SpecialistAppointment)
+            {
+                result[index] = _appointments[i];
+                index++;
+            }
+        }
+        return result;
+    }
+
+    public Appointment[] GetRegular()
+    {
+        int matches = 0;
+        for (int i = 0; i < _count; i++)
+        {
+            if (_appointments[i] is RegularAppointment) matches++;
+        }
+
+        Appointment[] result = new Appointment[matches];
+        int index = 0;
+        for (int i = 0; i < _count; i++)
+        {
+            if (_appointments[i] is RegularAppointment)
+            {
+                result[index] = _appointments[i];
+                index++;
+            }
         }
         return result;
     }
