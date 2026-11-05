@@ -7,6 +7,7 @@ public class Clinic
 {
     public string Name { get; }
     public PatientManager Patients { get; }
+    public WaitingQueue<Patient> WaitingRoom { get; }
     public DoctorManager Doctors { get; }
     public AppointmentManager Appointments { get; }
     public MedicalRecordManager MedicalRecords { get; }
@@ -16,6 +17,7 @@ public class Clinic
     {
         Name = name;
         Patients = new PatientManager();
+        WaitingRoom = new WaitingQueue<Patient>();
         Doctors = new DoctorManager();
         Appointments = new AppointmentManager(Patients, Doctors);
         MedicalRecords = new MedicalRecordManager();
