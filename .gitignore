@@ -13,3 +13,5 @@ Thumbs.db
 # Секрети
 *.env
 appsettings.Development.json
+
+/ClinicApp/.github
