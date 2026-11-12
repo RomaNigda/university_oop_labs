@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using System.Text;
 using ClinicApp;
+using ClinicApp.Comparators;
 using ClinicApp.Enums;
 using ClinicApp.Interfaces;
 using ClinicApp.Managers;
@@ -38,6 +39,7 @@ while (running)
     Console.WriteLine("|  5. Рахунки        — оплата, борги           |");
     Console.WriteLine("|  6. Черга          — очікування, прийом      |");
     Console.WriteLine("|  7. Звіт           — загальна статистика     |");
+    Console.WriteLine("|  8. Аналітика      — рейтинги та витрати     |");
     Console.WriteLine("|  0. Вийти                                    |");
     Console.WriteLine("+----------------------------------------------+");
     Console.Write("Оберіть розділ: ");
@@ -51,11 +53,95 @@ while (running)
         case "5": BillingMenu(clinic); break;
         case "6": WaitingRoomMenu(clinic); break;
         case "7": clinic.GenerateReport(); break;
+        case "8": AnalyticsMenu(clinic); break;
         case "0": running = false; break;
         default: Console.WriteLine("Невідомий пункт меню."); break;
     }
 }
 
+static void AnalyticsMenu(Clinic clinic)
+{
+    bool back = false;
+    while (!back)
+    {
+        Console.WriteLine("\n── Аналітика ───────────────────");
+        Console.WriteLine("1. Лікарі за навантаженням");
+        Console.WriteLine("2. Лікарі за виручкою");
+        Console.WriteLine("3. Лікарі за іменем");
+        Console.WriteLine("4. Пацієнти за кількістю візитів");
+        Console.WriteLine("5. Пацієнти за витратами");
+        Console.WriteLine("0. Назад");
+        Console.Write("Оберіть: ");
+
+        switch (Console.ReadLine())
+        {
+            case "1":
+            {
+                List<DoctorStats> doctorStats = CollectDoctorStats(clinic);
+                doctorStats.Sort();
+                for (int i = 0; i < doctorStats.Count; i++)
+                    Console.WriteLine(doctorStats[i]);
+                break;
+            }
+            case "2":
+            {
+                List<DoctorStats> doctorStats = CollectDoctorStats(clinic);
+                doctorStats.Sort(new DoctorStatsByRevenue());
+                for (int i = 0; i < doctorStats.Count; i++)
+                    Console.WriteLine(doctorStats[i]);
+                break;
+            }
+            case "3":
+            {
+                List<DoctorStats> doctorStats = CollectDoctorStats(clinic);
+                doctorStats.Sort(new DoctorStatsByName());
+                for (int i = 0; i < doctorStats.Count; i++)
+                    Console.WriteLine(doctorStats[i]);
+                break;
+            }
+            case "4":
+            {
+                List<PatientStats> patientStats = CollectPatientStats(clinic);
+                patientStats.Sort();
+                for (int i = 0; i < patientStats.Count; i++)
+                    Console.WriteLine(patientStats[i]);
+                break;
+            }
+            case "5":
+            {
+                List<PatientStats> patientStats = CollectPatientStats(clinic);
+                patientStats.Sort(new PatientStatsBySpent());
+                for (int i = 0; i < patientStats.Count; i++)
+                    Console.WriteLine(patientStats[i]);
+                break;
+            }
+            case "0":
+                back = true;
+                break;
+            default:
+                Console.WriteLine("Невідомий пункт меню.");
+                break;
+        }
+    }
+}
+
+static List<DoctorStats> CollectDoctorStats(Clinic clinic)
+{
+    List<DoctorStats> stats = new List<DoctorStats>();
+    foreach (DoctorStats stat in clinic.Analytics.ComputeDoctorStats())
+        stats.Add(stat);
+
+    return stats;
+}
+
+static List<PatientStats> CollectPatientStats(Clinic clinic)
+{
+    List<PatientStats> stats = new List<PatientStats>();
+    foreach (PatientStats stat in clinic.Analytics.ComputePatientStats())
+        stats.Add(stat);
+
+    return stats;
+}
 
 static void SeedPatientsAndDoctors(Clinic clinic)
 {
