@@ -6,6 +6,7 @@ using ClinicApp.Enums;
 using ClinicApp.Interfaces;
 using ClinicApp.Managers;
 using ClinicApp.Models;
+using ClinicApp.Utils;
 
 Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 Console.OutputEncoding = Encoding.UTF8;
@@ -40,6 +41,7 @@ while (running)
     Console.WriteLine("|  6. Черга          — очікування, прийом      |");
     Console.WriteLine("|  7. Звіт           — загальна статистика     |");
     Console.WriteLine("|  8. Аналітика      — рейтинги та витрати     |");
+    Console.WriteLine("|  9. Плани лікування — рефлексія, атрибути    |");
     Console.WriteLine("|  0. Вийти                                    |");
     Console.WriteLine("+----------------------------------------------+");
     Console.Write("Оберіть розділ: ");
@@ -54,6 +56,7 @@ while (running)
         case "6": WaitingRoomMenu(clinic); break;
         case "7": clinic.GenerateReport(); break;
         case "8": AnalyticsMenu(clinic); break;
+        case "9": TreatmentPlansMenu(clinic); break;
         case "0": running = false; break;
         default: Console.WriteLine("Невідомий пункт меню."); break;
     }
@@ -882,4 +885,104 @@ static void PayAppointment(Clinic clinic)
     {
         Console.WriteLine("Не вдалося оплатити: запис не знайдено, вже оплачено або скасовано.");
     }
+}
+
+static void TreatmentPlansMenu(Clinic clinic)
+{
+    bool back = false;
+    while (!back)
+    {
+        Console.WriteLine("\n── Плани лікування ────────────────────");
+        Console.WriteLine("  1. Показати всі плани");
+        Console.WriteLine("  2. Додати план лікування");
+        Console.WriteLine("  3. Плани пацієнта");
+        Console.WriteLine("  4. Активувати план");
+        Console.WriteLine("  5. Завершити план");
+        Console.WriteLine("  6. Скасувати план");
+        Console.WriteLine("  7. Інформація про тип TreatmentPlan");
+        Console.WriteLine("  0. Назад");
+        Console.Write("Оберіть: ");
+
+        switch (Console.ReadLine())
+        {
+            case "1":
+                DisplayTreatmentPlans(clinic.TreatmentPlans.GetAll());
+                break;
+            case "2":
+                TreatmentPlan plan = FormBuilder.Build<TreatmentPlan>();
+                Console.WriteLine(clinic.TreatmentPlans.Add(plan)
+                    ? "План додано."
+                    : "План не додано.");
+                break;
+            case "3":
+                if (TryReadInt("ID пацієнта: ", out int patientId))
+                    DisplayTreatmentPlans(clinic.TreatmentPlans.GetByPatient(patientId));
+                break;
+            case "4":
+                ChangeTreatmentPlanStatus(clinic, 1);
+                break;
+            case "5":
+                ChangeTreatmentPlanStatus(clinic, 2);
+                break;
+            case "6":
+                ChangeTreatmentPlanStatus(clinic, 3);
+                break;
+            case "7":
+                ModelValidator.PrintInfo(typeof(TreatmentPlan));
+                break;
+            case "0":
+                back = true;
+                break;
+            default:
+                Console.WriteLine("Невідомий пункт меню.");
+                break;
+        }
+    }
+}
+
+static void DisplayTreatmentPlans(TreatmentPlan[] plans)
+{
+    if (plans.Length == 0)
+    {
+        Console.WriteLine("Планів не знайдено.");
+        return;
+    }
+
+    for (int i = 0; i < plans.Length; i++)
+    {
+        Console.WriteLine($"[{plans[i].Id}] Пацієнт: {plans[i].PatientId} | Діагноз: {plans[i].Diagnosis} | Тривалість: {plans[i].DurationDays} дн. | Статус: {plans[i].Status}");
+    }
+}
+
+static void ChangeTreatmentPlanStatus(Clinic clinic, int action)
+{
+    if (!TryReadInt("ID плану: ", out int id))
+        return;
+
+    TreatmentPlan? plan = clinic.TreatmentPlans.GetById(id);
+    if (plan == null)
+    {
+        Console.WriteLine("План не знайдено.");
+        return;
+    }
+
+    bool changed;
+    string successMessage;
+    if (action == 1)
+    {
+        changed = plan.Activate();
+        successMessage = "План активовано.";
+    }
+    else if (action == 2)
+    {
+        changed = plan.Complete();
+        successMessage = "План завершено.";
+    }
+    else
+    {
+        changed = plan.Cancel();
+        successMessage = "План скасовано.";
+    }
+
+    Console.WriteLine(changed ? successMessage : "Перехід неможливий.");
 }
