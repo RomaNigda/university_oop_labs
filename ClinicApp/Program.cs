@@ -16,6 +16,16 @@ Clinic clinic = new Clinic("Медична Клініка");
 SeedPatientsAndDoctors(clinic);
 SeedMedicalRecords(clinic);
 
+if (clinic.Session.Exists())
+{
+    Console.Write("Знайдено збережену сесію. Завантажити? (y/n): ");
+    if (string.Equals(Console.ReadLine(), "y", StringComparison.OrdinalIgnoreCase))
+    {
+        int loadedCount = clinic.Session.Load(clinic);
+        Console.WriteLine($"Завантажено {loadedCount} пацієнтів.");
+    }
+}
+
 UrgentAppointment urgent = new UrgentAppointment(1, 1, DateTime.Today.AddDays(1), "тест");
 Appointment asBase = urgent;
 
@@ -59,7 +69,15 @@ while (running)
         case "8": AnalyticsMenu(clinic); break;
         case "9": TreatmentPlansMenu(clinic); break;
         case "10": FilesMenu(clinic); break;
-        case "0": running = false; break;
+        case "0":
+            Console.Write("Зберегти сесію? (y/n): ");
+            if (string.Equals(Console.ReadLine(), "y", StringComparison.OrdinalIgnoreCase))
+            {
+                clinic.Session.Save(clinic);
+                Console.WriteLine("Сесію збережено.");
+            }
+            running = false;
+            break;
         default: Console.WriteLine("Невідомий пункт меню."); break;
     }
 }
