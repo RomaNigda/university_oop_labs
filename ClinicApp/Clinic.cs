@@ -10,6 +10,7 @@ public class Clinic
     public WaitingQueue<Patient> WaitingRoom { get; }
     public DoctorManager Doctors { get; }
     public AppointmentManager Appointments { get; }
+    public AnalyticsManager Analytics { get; }
     public MedicalRecordManager MedicalRecords { get; }
     public BillingManager Billing { get; }
 
@@ -20,6 +21,7 @@ public class Clinic
         WaitingRoom = new WaitingQueue<Patient>();
         Doctors = new DoctorManager();
         Appointments = new AppointmentManager(Patients, Doctors);
+        Analytics = new AnalyticsManager(Appointments, Doctors, Patients);
         MedicalRecords = new MedicalRecordManager();
         Billing = new BillingManager(Appointments);
     }

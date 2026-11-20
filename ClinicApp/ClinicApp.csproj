@@ -11,4 +11,14 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.12" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include=".github\copilot-instructions.md" />
+    <Content Include=".github\Lab10-Iterators-Comparators.md" />
+    <Content Include=".github\Lab11-Copilot-Instructions.md" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include=".github\Lab09-Generics.md" />
+  </ItemGroup>
+
 </Project>
