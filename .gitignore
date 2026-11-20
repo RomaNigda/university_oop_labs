@@ -15,3 +15,7 @@ Thumbs.db
 appsettings.Development.json
 
 /ClinicApp/.github
+
+clinic.log
+session.dat
+reports/
