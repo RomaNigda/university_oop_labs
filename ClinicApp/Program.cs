@@ -3,6 +3,7 @@ using System.Text;
 using ClinicApp;
 using ClinicApp.Comparators;
 using ClinicApp.Enums;
+using ClinicApp.Events;
 using ClinicApp.Interfaces;
 using ClinicApp.Managers;
 using ClinicApp.Models;
@@ -12,6 +13,8 @@ Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 Console.OutputEncoding = Encoding.UTF8;
 
 Clinic clinic = new Clinic("Медична Клініка");
+
+clinic.Appointments.AppointmentBooked += OnAppointmentBookedConsole;
 
 SeedPatientsAndDoctors(clinic);
 SeedMedicalRecords(clinic);
@@ -1005,6 +1008,11 @@ static void PayAppointment(Clinic clinic)
     {
         Console.WriteLine("Не вдалося оплатити: запис не знайдено, вже оплачено або скасовано.");
     }
+}
+
+static void OnAppointmentBookedConsole(object? sender, AppointmentEventArgs e)
+{
+    Console.WriteLine($"  [EVENT] Запис #{e.AppointmentId} створено: пацієнт #{e.PatientId} → лікар #{e.DoctorId}, {e.ScheduledAt:dd.MM.yyyy HH:mm}");
 }
 
 static void LogInputError(Clinic clinic, Exception exception)

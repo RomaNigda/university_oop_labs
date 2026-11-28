@@ -1,3 +1,4 @@
+using ClinicApp.Events;
 using ClinicApp.Interfaces;
 using ClinicApp.Models;
 
@@ -5,6 +6,19 @@ namespace ClinicApp.Managers;
 
 public class AppointmentManager
 {
+    public event EventHandler<AppointmentEventArgs>? AppointmentBooked;
+
+    private void OnAppointmentBooked(Appointment appointment)
+    {
+        AppointmentBooked?.Invoke(this, CreateEventArgs(appointment));
+    }
+
+    private static AppointmentEventArgs CreateEventArgs(Appointment appointment)
+    {
+        string notes = (appointment is UrgentAppointment urgent) ? urgent.UrgencyNote : appointment.Notes;
+        return new AppointmentEventArgs(appointment.Id, appointment.PatientId, appointment.DoctorId, appointment.ScheduledAt, notes);
+    }
+
     private const int MaxAppointments = 500;
     private Appointment[] _appointments;
     private int _count;
@@ -51,6 +65,7 @@ public class AppointmentManager
         _count++;
 
         Console.WriteLine($"Запис [{appointment.Id}] створено: {patient.FullName} → {doctor.FullName} о {scheduledAt:dd.MM.yyyy HH:mm}");
+        OnAppointmentBooked(appointment);
         return true;
     }
 
@@ -81,6 +96,7 @@ public class AppointmentManager
         _count++;
 
         Console.WriteLine($"Запис [{appointment.Id}] створено: {patient.FullName} → {doctor.FullName} о {scheduledAt:dd.MM.yyyy HH:mm}");
+        OnAppointmentBooked(appointment);
         return true;
     }
 
@@ -111,6 +127,7 @@ public class AppointmentManager
         _count++;
 
         Console.WriteLine($"Запис [{appointment.Id}] створено: {patient.FullName} → {doctor.FullName} о {scheduledAt:dd.MM.yyyy HH:mm}");
+        OnAppointmentBooked(appointment);
         return true;
     }
 
