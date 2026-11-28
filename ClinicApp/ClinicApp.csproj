@@ -15,6 +15,7 @@
     <Content Include=".github\copilot-instructions.md" />
     <Content Include=".github\Lab10-Iterators-Comparators.md" />
     <Content Include=".github\Lab11-Copilot-Instructions.md" />
+    <Content Include=".github\Lab12-Copilot-Instructions.md" />
   </ItemGroup>
 
   <ItemGroup>
