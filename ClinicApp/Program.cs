@@ -56,6 +56,7 @@ while (running)
     Console.WriteLine("|  8. Аналітика      — рейтинги та витрати     |");
     Console.WriteLine("|  9. Плани лікування — рефлексія, атрибути    |");
     Console.WriteLine("| 10. Файли          — журнал та звіти         |");
+    Console.WriteLine("| 11. Звіти          — групування, топ-N       |");
     Console.WriteLine("|  0. Вийти                                    |");
     Console.WriteLine("+----------------------------------------------+");
     Console.Write("Оберіть розділ: ");
@@ -72,6 +73,7 @@ while (running)
         case "8": AnalyticsMenu(clinic); break;
         case "9": TreatmentPlansMenu(clinic); break;
         case "10": FilesMenu(clinic); break;
+        case "11": ReportsMenu(clinic); break;
         case "0":
             clinic.Tracker.PrintSummary();
             clinic.Tracker.SaveSummary();
@@ -84,6 +86,113 @@ while (running)
             running = false;
             break;
         default: Console.WriteLine("Невідомий пункт меню."); break;
+    }
+}
+
+static void ReportsMenu(Clinic clinic)
+{
+    bool back = false;
+    while (!back)
+    {
+        Console.WriteLine("\n── Звіти ───────────────────────");
+        Console.WriteLine("1. Спеціальності");
+        Console.WriteLine("2. Найзавантаженіший лікар");
+        Console.WriteLine("3. Пацієнти з кількома візитами");
+        Console.WriteLine("4. Топ-3 лікарів за виручкою");
+        Console.WriteLine("5. Чи є термінові записи");
+        Console.WriteLine("6. Активні спеціальності");
+        Console.WriteLine("7. Виручка по місяцях");
+        Console.WriteLine("0. Назад");
+        Console.Write("Оберіть: ");
+
+        switch (Console.ReadLine())
+        {
+            case "1":
+            {
+                bool hasData = false;
+                foreach (SpecialityReport report in clinic.Reports.GetSpecialityStats())
+                {
+                    Console.WriteLine(report);
+                    hasData = true;
+                }
+                if (!hasData)
+                    Console.WriteLine("Немає даних.");
+                break;
+            }
+            case "2":
+            {
+                string? doctorName = clinic.Reports.FindBusiestDoctorName();
+                Console.WriteLine(doctorName == null
+                    ? "Немає лікарів."
+                    : $"Найзавантаженіший лікар: {doctorName}");
+                break;
+            }
+            case "3":
+            {
+                Console.Write("Мінімальна кількість візитів: ");
+                int minVisits;
+                if (!int.TryParse(Console.ReadLine(), out minVisits))
+                {
+                    Console.WriteLine("Некоректне значення.");
+                    break;
+                }
+
+                bool hasData = false;
+                foreach (string patientName in clinic.Reports.GetPatientsWithMultipleVisits(minVisits))
+                {
+                    Console.WriteLine(patientName);
+                    hasData = true;
+                }
+                if (!hasData)
+                    Console.WriteLine("Таких пацієнтів немає.");
+                break;
+            }
+            case "4":
+            {
+                int rank = 1;
+                foreach (DoctorStats stats in clinic.Reports.GetTopEarners(3))
+                {
+                    Console.WriteLine($"  {rank}. {stats.FullName} — {stats.TotalRevenue:F2} грн");
+                    rank++;
+                }
+                if (rank == 1)
+                    Console.WriteLine("Немає даних.");
+                break;
+            }
+            case "5":
+                Console.WriteLine(clinic.Reports.HasAnyUrgentAppointments() ? "Так" : "Ні");
+                break;
+            case "6":
+            {
+                bool hasData = false;
+                foreach (Speciality speciality in clinic.Reports.GetActiveSpecialities())
+                {
+                    Console.WriteLine(ClinicFormatter.FormatSpeciality(speciality));
+                    hasData = true;
+                }
+                if (!hasData)
+                    Console.WriteLine("Немає даних.");
+                break;
+            }
+            case "7":
+            {
+                bool hasData = false;
+                foreach (var month in clinic.Reports.GetMonthlyRevenue())
+                {
+                    Console.WriteLine($"{month.Year}/{month.Month.ToString("D2")} — {month.Total:F2} грн");
+                    hasData = true;
+                }
+                if (!hasData)
+                    Console.WriteLine("Немає даних.");
+                break;
+            }
+            case "0":
+                back = true;
+                break;
+            default:
+                Console.WriteLine("Невідомий пункт меню.");
+                break;
+        }
     }
 }
 
