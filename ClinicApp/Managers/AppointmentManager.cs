@@ -1,3 +1,4 @@
+using ClinicApp.Events;
 using ClinicApp.Interfaces;
 using ClinicApp.Models;
 
@@ -5,6 +6,34 @@ namespace ClinicApp.Managers;
 
 public class AppointmentManager
 {
+    public event EventHandler<AppointmentEventArgs>? AppointmentBooked;
+    public event EventHandler<AppointmentEventArgs>? UrgentAppointmentBooked;
+    public event EventHandler<AppointmentEventArgs>? AppointmentCancelled;
+    public event EventHandler<AppointmentEventArgs>? AppointmentCompleted;
+
+    private void OnAppointmentBooked(Appointment appointment)
+    {
+        AppointmentBooked?.Invoke(this, CreateEventArgs(appointment));
+        if (appointment is UrgentAppointment)
+            UrgentAppointmentBooked?.Invoke(this, CreateEventArgs(appointment));
+    }
+
+    private void OnAppointmentCancelled(Appointment appointment)
+    {
+        AppointmentCancelled?.Invoke(this, CreateEventArgs(appointment));
+    }
+
+    private void OnAppointmentCompleted(Appointment appointment)
+    {
+        AppointmentCompleted?.Invoke(this, CreateEventArgs(appointment));
+    }
+
+    private static AppointmentEventArgs CreateEventArgs(Appointment appointment)
+    {
+        string notes = (appointment is UrgentAppointment urgent) ? urgent.UrgencyNote : appointment.Notes;
+        return new AppointmentEventArgs(appointment.Id, appointment.PatientId, appointment.DoctorId, appointment.ScheduledAt, notes);
+    }
+
     private const int MaxAppointments = 500;
     private Appointment[] _appointments;
     private int _count;
@@ -51,6 +80,7 @@ public class AppointmentManager
         _count++;
 
         Console.WriteLine($"Запис [{appointment.Id}] створено: {patient.FullName} → {doctor.FullName} о {scheduledAt:dd.MM.yyyy HH:mm}");
+        OnAppointmentBooked(appointment);
         return true;
     }
 
@@ -81,6 +111,7 @@ public class AppointmentManager
         _count++;
 
         Console.WriteLine($"Запис [{appointment.Id}] створено: {patient.FullName} → {doctor.FullName} о {scheduledAt:dd.MM.yyyy HH:mm}");
+        OnAppointmentBooked(appointment);
         return true;
     }
 
@@ -111,6 +142,7 @@ public class AppointmentManager
         _count++;
 
         Console.WriteLine($"Запис [{appointment.Id}] створено: {patient.FullName} → {doctor.FullName} о {scheduledAt:dd.MM.yyyy HH:mm}");
+        OnAppointmentBooked(appointment);
         return true;
     }
 
@@ -132,7 +164,10 @@ public class AppointmentManager
 
         bool result = appointment.Cancel(reason);
         if (result)
+        {
             Console.WriteLine($"Запис [{id}] скасовано.");
+            OnAppointmentCancelled(appointment);
+        }
         return result;
     }
 
@@ -144,7 +179,10 @@ public class AppointmentManager
 
         bool result = appointment.Complete();
         if (result)
+        {
             Console.WriteLine($"Запис [{id}] завершено.");
+            OnAppointmentCompleted(appointment);
+        }
         return result;
     }
 
@@ -348,13 +386,17 @@ public class AppointmentManager
         return result;
     }
     
-    public static int CancelAll(ICancellable[] items, string reason = "")
+    public int CancelAll(ICancellable[] items, string reason = "")
     {
         int count = 0;
         for (int i = 0; i < items.Length; i++)
         {
             if (items[i].Cancel(reason))
+            {
                 count++;
+                if (items[i] is Appointment cancelled)
+                    OnAppointmentCancelled(cancelled);
+            }
         }
         return count;
     }
