@@ -16,6 +16,7 @@ public class Clinic
     public MedicalRecordManager MedicalRecords { get; }
     public BillingManager Billing { get; }
     public ClinicLogger Logger { get; }
+    public PatientPassportWriter Passport { get; }
     public ClinicExporter Exporter { get; }
     public SessionManager Session { get; }
 
@@ -31,6 +32,7 @@ public class Clinic
         MedicalRecords = new MedicalRecordManager();
         Billing = new BillingManager(Appointments);
         Logger = new ClinicLogger();
+        Passport = new PatientPassportWriter(this);
         Exporter = new ClinicExporter(this);
         Session = new SessionManager();
 
@@ -46,6 +48,10 @@ public class Clinic
         Appointments.AppointmentCompleted += Logger.OnAppointmentCompleted;
         Billing.PaymentReceived += Logger.OnPaymentReceived;
         TreatmentPlans.PlanCompleted += Logger.OnPlanCompleted;
+
+        Patients.PatientAdded += Passport.OnPatientAdded;
+        Appointments.AppointmentCompleted += Passport.OnAppointmentCompleted;
+        TreatmentPlans.PlanCompleted += Passport.OnPlanCompleted;
     }
 
     public void DisplaySchedule(DateTime date)
