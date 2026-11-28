@@ -19,3 +19,6 @@ appsettings.Development.json
 clinic.log
 session.dat
 reports/
+patients/
+alerts/
+session_summary.txt

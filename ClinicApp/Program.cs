@@ -73,6 +73,8 @@ while (running)
         case "9": TreatmentPlansMenu(clinic); break;
         case "10": FilesMenu(clinic); break;
         case "0":
+            clinic.Tracker.PrintSummary();
+            clinic.Tracker.SaveSummary();
             Console.Write("Зберегти сесію? (y/n): ");
             if (string.Equals(Console.ReadLine(), "y", StringComparison.OrdinalIgnoreCase))
             {
